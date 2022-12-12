@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Tyrant",
+    platforms: [.iOS(.v13), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -23,6 +24,7 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "TyrantTests",
-            dependencies: ["Tyrant"]),
+            dependencies: ["Tyrant"],
+            resources: [.process("Country_Flags_Icons.json")]),
     ]
 )
