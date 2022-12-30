@@ -16,7 +16,7 @@ import UIKit
   private var storage: DiskStorage!
   private var storedImagesIndex = Set<String>()
   
-  func image(_ key: String, size: CGSize = CGSize.zero)
+  public func image(_ key: String, size: CGSize = CGSize.zero)
   async throws -> UIImage {
     if storage == nil {
       try await setUp()
@@ -36,14 +36,14 @@ import UIKit
     }
   }
   
-  func clear() async {
+  public func clear() async {
     for name in storedImagesIndex {
       try? await storage.remove(name: name)
     }
     storedImagesIndex.removeAll()
   }
   
-  func clearInMemoryAssets() async {
+  public func clearInMemoryAssets() async {
     await imageLoader.clear()
   }
   
