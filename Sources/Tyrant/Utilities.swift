@@ -26,7 +26,6 @@ extension Task where Success == Never, Failure == Never {
 
 struct ResizeError: Error { }
 
-let sharedContext = CIContext(options: [.useSoftwareRenderer : false])
 func resize(_ data: Data, to size: CGSize) throws -> UIImage {
   guard let image = UIImage(data: data) else {
     throw ResizeError()
@@ -36,9 +35,13 @@ func resize(_ data: Data, to size: CGSize) throws -> UIImage {
                                               insideRect: .init(origin: .zero, size: size))
   let targetSize = availableRect.size
   
-  UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-  image.draw(in: CGRect(origin: CGPoint.zero, size: targetSize))
-  let resizedImage = UIGraphicsGetImageFromCurrentImageContext()!
-  UIGraphicsEndImageContext()
-  return resizedImage
+  let format = UIGraphicsImageRendererFormat()
+  format.scale = 1
+  let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
+  
+  let resized = renderer.image { (context) in
+    image.draw(in: CGRect(origin: .zero, size: targetSize))
+  }
+  
+  return resized
 }
