@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 
 /// Easily throw generic errors with a text description.
 extension String: LocalizedError {
@@ -31,8 +32,12 @@ func resize(_ data: Data, to size: CGSize) throws -> UIImage {
     throw ResizeError()
   }
   
+  let availableRect = AVFoundation.AVMakeRect(aspectRatio: image.size,
+                                              insideRect: .init(origin: .zero, size: size))
+  let targetSize = availableRect.size
+  
   UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-  image.draw(in: CGRect(origin: CGPoint.zero, size: size))
+  image.draw(in: CGRect(origin: CGPoint.zero, size: targetSize))
   let resizedImage = UIGraphicsGetImageFromCurrentImageContext()!
   UIGraphicsEndImageContext()
   return resizedImage
