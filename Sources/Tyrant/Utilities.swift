@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import CoreImage
 
 /// Easily throw generic errors with a text description.
 extension String: LocalizedError {
@@ -25,13 +26,29 @@ extension Task where Success == Never, Failure == Never {
 
 struct ResizeError: Error { }
 
+let sharedContext = CIContext(options: [.useSoftwareRenderer : false])
 func resize(_ data: Data, to size: CGSize) throws -> UIImage {
-  guard let image = UIImage(data: data) else {
+  guard let uiImage = UIImage(data: data) else {
+    throw ResizeError()
+  }
+  guard let image = CIImage(data: data) else {
     throw ResizeError()
   }
   
-  let renderer = UIGraphicsImageRenderer(size: size)
-  return renderer.image { (context) in
-    image.draw(in: CGRect(origin: .zero, size: size))
+  let scale = size.width / uiImage.size.width
+  let aspectRatio = uiImage.size.width / uiImage.size.height
+  
+  let filter = CIFilter(name: "CILanczosScaleTransform")
+  filter?.setValue(image, forKey: kCIInputImageKey)
+  filter?.setValue(scale, forKey: kCIInputScaleKey)
+  filter?.setValue(aspectRatio, forKey: kCIInputAspectRatioKey)
+  
+  guard let outputCIImage = filter?.outputImage,
+        let outputCGImage = sharedContext.createCGImage(outputCIImage,
+                                                        from: outputCIImage.extent)
+  else {
+    throw ResizeError()
   }
+  
+  return UIImage(cgImage: outputCGImage)
 }
