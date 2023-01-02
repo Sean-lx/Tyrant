@@ -16,7 +16,6 @@ extension String: LocalizedError {
   }
 }
 
-@available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
 extension Task where Success == Never, Failure == Never {
   /// Suspends the current task for at least the given duration in seconds.
   /// - Parameter seconds: The sleep duration in seconds.
@@ -27,7 +26,6 @@ extension Task where Success == Never, Failure == Never {
 
 struct ResizeError: Error { }
 
-@available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
 func resize(_ data: Data, to size: CGSize) throws -> UIImage {
   guard let cgImage = UIImage(data: data)?.cgImage,
         let colorSpace = cgImage.colorSpace else {

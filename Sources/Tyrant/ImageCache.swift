@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-@available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
 @globalActor public actor ImageCache {
   public static let shared = ImageCache()
   private let imageLoader = ImageLoader()
