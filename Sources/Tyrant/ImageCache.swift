@@ -15,6 +15,8 @@ import UIKit
   private var storage: DiskStorage!
   private var storedImagesIndex = Set<String>()
   
+  //MARK: - Public API
+  /// get image
   public func image(_ key: String, size: CGSize = CGSize.zero)
   async throws -> UIImage {
     if storage == nil {
@@ -35,6 +37,7 @@ import UIKit
     }
   }
   
+  /// clear disk storage
   public func clear() async {
     for name in storedImagesIndex {
       try? await storage.remove(name: name)
@@ -42,6 +45,7 @@ import UIKit
     storedImagesIndex.removeAll()
   }
   
+  /// clear memory storage
   public func clearInMemoryAssets() async {
     await imageLoader.clear()
   }
@@ -54,11 +58,12 @@ import UIKit
     await imageLoader.setUp()
   }
   
+  //MARK: - Private functions
   private func loadFromMemory(_ key: String, size: CGSize = CGSize.zero)
   async throws -> UIImage? {
     let keys = await imageLoader.cache.keys
     if keys.contains(key) {
-      print("Cached in-memory")
+      //print("Cached in-memory")
       return try await imageLoader.image(key, size: size)
     }
     return nil
@@ -86,8 +91,8 @@ import UIKit
       image = resizedImage
     }
     
-    print("Found cache on disk")
-    print("Loading from disk to memory")
+    //print("Found cache on disk")
+    //print("Loading from disk to memory")
     await imageLoader.add(image, forKey: key)
     return image
   }
